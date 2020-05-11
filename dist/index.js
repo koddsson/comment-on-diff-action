@@ -3518,8 +3518,8 @@ function run() {
             const octokit = new github_1.GitHub(token);
             const event = getGitHubEvent();
             const { data: pullRequest } = yield octokit.pulls.get({
-                owner: event.owner,
-                repo: event.repo,
+                owner: event.repository.owner,
+                repo: event.repository.name,
                 // eslint-disable-next-line @typescript-eslint/camelcase
                 pull_number: event.pull_request.number,
                 mediaType: {
