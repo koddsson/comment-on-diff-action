@@ -1,18 +1,38 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import {readFileSync} from 'fs'
+
+import {getInput, debug, setFailed} from '@actions/core'
+import {GitHub} from '@actions/github'
+
+function getGitHubEvent(): {
+  owner: string
+  repo: string
+  pull_request: {number: number}
+} {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH!, 'utf8'))
+}
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    const pattern = getInput('pattern')
+    debug(`Got pattern: ${pattern}`)
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const token = getInput('gh-token')
+    const octokit = new GitHub(token)
+    const event = getGitHubEvent()
+    const {data: pullRequest} = await octokit.pulls.get({
+      owner: event.owner,
+      repo: event.repo,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      pull_number: event.pull_request.number,
+      mediaType: {
+        format: 'diff'
+      }
+    })
 
-    core.setOutput('time', new Date().toTimeString())
+    debug(JSON.stringify(pullRequest))
   } catch (error) {
-    core.setFailed(error.message)
+    setFailed(error.message)
   }
 }
 
