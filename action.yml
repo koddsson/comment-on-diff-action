@@ -4,7 +4,9 @@ author: 'Kristján Oddsson'
 inputs:
   pattern:
     description: 'The pattern you want to match'
-  gh-token: ${{ secrets.GITHUB_TOKEN }}
+  gh-token: 
+    description: 'GitHub token'
+
 runs:
   using: 'node14'
   main: 'dist/index.js'
