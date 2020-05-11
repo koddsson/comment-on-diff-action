@@ -4,8 +4,7 @@ import {getInput, debug, setFailed} from '@actions/core'
 import {GitHub} from '@actions/github'
 
 function getGitHubEvent(): {
-  owner: string
-  repo: string
+  repository: {owner: string; name: string}
   pull_request: {number: number}
 } {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -21,8 +20,8 @@ async function run(): Promise<void> {
     const octokit = new GitHub(token)
     const event = getGitHubEvent()
     const {data: pullRequest} = await octokit.pulls.get({
-      owner: event.owner,
-      repo: event.repo,
+      owner: event.repository.owner,
+      repo: event.repository.name,
       // eslint-disable-next-line @typescript-eslint/camelcase
       pull_number: event.pull_request.number,
       mediaType: {
