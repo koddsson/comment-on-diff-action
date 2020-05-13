@@ -1,23 +1,18 @@
-name: "build-test"
-on: # rebuild any PRs and main branch changes
-  pull_request:
-  push:
-    branches:
-      - master
-      - 'releases/*'
+name: Comment on diff
+on: [push, pull_request]
 
 jobs:
-  build: # make sure build/ci work properly
+  comment:
     runs-on: ubuntu-latest
+    outputs:
+      diff: ${{ steps.diff.outputs.diff }}
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - run: |
-        npm install
-        npm run all
-  test: # make sure the action works on a clean machine without building
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
+        git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+    - id: diff
+      run: echo "::set-output name=diff::hello"
+    - run: echo "${{ needs.diff.outputs.diff }}"
     - uses: ./
-      with: 
-        milliseconds: 1000
+      with:
+        pattern: test

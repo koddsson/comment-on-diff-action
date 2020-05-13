@@ -1,10 +1,9 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Comment on diffs'
+description: 'TODO'
+author: 'Kristján Oddsson'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  pattern:
+    description: 'The pattern you want to match'
 runs:
   using: 'node12'
   main: 'dist/index.js'
