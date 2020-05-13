@@ -12,7 +12,7 @@ jobs:
         git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
     - id: diff
       run: echo "::set-output name=diff::hello"
-    - run: echo ${{ needs.diff.outputs.diff }}
+    - run: echo "${{ needs.diff.outputs.diff }}"
     - uses: ./
       with:
         pattern: test

@@ -4,7 +4,6 @@ author: 'Kristján Oddsson'
 inputs:
   pattern:
     description: 'The pattern you want to match'
-
 runs:
   using: 'node12'
   main: 'dist/index.js'
