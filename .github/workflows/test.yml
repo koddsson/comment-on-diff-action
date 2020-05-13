@@ -4,16 +4,15 @@ on: [push, pull_request]
 jobs:
   comment:
     runs-on: ubuntu-latest
+    outputs:
+      diff: ${{ steps.diff.outputs.diff }}
     steps:
-    - uses: actions/checkout@v1
-    - uses: jwalton/gh-find-current-pr@v1
-      id: findPr
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-    - run: echo "Your PR is ${PR}"
-        if: success() && steps.findPr.outputs.number
-        env:
-          PR: ${{ steps.findPr.outputs.pr }}
+    - uses: actions/checkout@v2
+    - run: |
+        git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+    - id: diff
+      run: echo "::set-output name=diff::$(git diff origin/master HEAD)"
+    - run: echo ${{ needs.diff.outputs.diff }}
     - uses: ./
       with:
         pattern: test
